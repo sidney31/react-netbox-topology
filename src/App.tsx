@@ -1,6 +1,6 @@
 import Topology from '@components/Topology/Topology'
 import useFetchTopoToJSON from '@hooks/useFetchTopoToJSON'
-import { jsonParser } from '@utils/jsonParser'
+import jsonParser from '@utils/jsonParser'
 import type { Edge, Node } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import { useEffect, useState } from 'react'
@@ -24,7 +24,7 @@ function App() {
 	}, [json])
 
 	return (
-		<div className='w-[100svw] h-[100svh]'>
+		<div className='w-[100svw] h-[100svh] border-red-100 border-[1px]'>
 			<Topology nodesProps={nodes} edgesProps={edges} />
 		</div>
 	)

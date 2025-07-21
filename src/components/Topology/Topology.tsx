@@ -1,6 +1,12 @@
 import useSaveCoords from '@hooks/useSaveCoords'
-import type { Edge, Node, NodeChange } from '@xyflow/react'
-import { Background, ReactFlow, applyNodeChanges } from '@xyflow/react'
+import type {
+	Edge,
+	Node,
+	NodeChange,
+	OnNodeDrag,
+	OnNodesChange,
+} from '@xyflow/react'
+import { applyNodeChanges, Background, ReactFlow } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import { useCallback, useEffect, useState } from 'react'
 import { edgeTypes, nodeTypes, type TopologyProps } from './types'
@@ -15,36 +21,30 @@ function Topology({ nodesProps, edgesProps }: TopologyProps) {
 		setEdges(edgesProps)
 	}, [nodesProps, edgesProps])
 
-	//обработчик перемещения нод
-	const onNodesChange = useCallback((changes: NodeChange[]) => {
-		setNodes(nodesSnapshot => {
-			if (!nodesSnapshot) return nodes
-			const changedNode = getChangedNode(nodesSnapshot)
-			if (changedNode)
-				saveCoords({
-					group: 'default',
-					node_id: changedNode.id,
-					x: changedNode.position.x,
-					y: changedNode.position.y,
-				})
+	const onNodesChange: OnNodesChange = useCallback(
+		(changes: NodeChange<Node>[]) =>
+			setNodes(nodesSnapshot => applyNodeChanges(changes, nodesSnapshot)),
+		[]
+	)
 
-			return applyNodeChanges(changes, nodesSnapshot)
-		})
-	}, [])
-
-	// определение перемещенной ноды
-	const getChangedNode = (nodesSnapshot: Node[]) => {
-		for (let i = 0; i < nodesSnapshot.length; i++)
-			if (nodesSnapshot[i].selected || nodesSnapshot[i].dragging)
-				return nodesSnapshot[i]
-		return null
-	}
+	const onNodeDragStop: OnNodeDrag = useCallback(
+		(event: React.MouseEvent, node: Node) => {
+			saveCoords({
+				group: 'default',
+				node_id: node.id,
+				x: node.position.x,
+				y: node.position.y,
+			})
+		},
+		[]
+	)
 
 	return (
 		<>
 			<ReactFlow
 				nodes={nodes}
 				edges={edges}
+				onNodeDragStop={onNodeDragStop}
 				onNodesChange={onNodesChange}
 				fitView
 				nodeTypes={nodeTypes}

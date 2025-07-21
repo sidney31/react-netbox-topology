@@ -1,7 +1,9 @@
 import type { Edge, Node } from '@xyflow/react'
 import type { TopologyData } from '../types/topology'
 
-export function jsonParser(json: TopologyData | null): [Node[], Edge[]] {
+export default function jsonParser(
+	json: TopologyData | null
+): [Node[], Edge[]] {
 	if (!json) throw new Error('json is null')
 
 	const nodes: Node[] = []

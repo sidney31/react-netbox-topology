@@ -6,6 +6,7 @@
 	],
 
 	"compilerOptions": {
+		"types": ["node"],
 		"erasableSyntaxOnly": false,
 		"baseUrl": ".",
 		"paths": {
