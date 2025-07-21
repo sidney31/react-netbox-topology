@@ -11,7 +11,7 @@ export function jsonParser(json: TopologyData | null): [Node[], Edge[]] {
 		const currentNode = json.nodes[i]
 		nodes.push({
 			id: currentNode.id.toString(),
-			data: { label: currentNode.name },
+			data: { label: currentNode.name, title: currentNode.title },
 			position: { x: currentNode.x, y: currentNode.y },
 			type: 'custom',
 			// style: {

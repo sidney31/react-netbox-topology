@@ -1,5 +1,6 @@
 import type { NodeProps } from '@xyflow/react'
 import { Handle, Position } from '@xyflow/react'
+import { Tooltip } from 'react-tooltip'
 
 const HANDLE_STYLES: React.CSSProperties = {
 	background: '#00000000',
@@ -10,7 +11,10 @@ const HANDLE_STYLES: React.CSSProperties = {
 export function CustomNode(props: NodeProps) {
 	return (
 		<div className='flex flex-col items-center ' data-nodeid={props.id}>
-			<div className='rounded-full h-[100px] w-[100px] border-[5px] border-solid border-[#9cc8f8] bg-white'></div>
+			<div
+				data-tooltip-id={`node_tooltip${props.id}`}
+				className='rounded-full h-[100px] w-[100px] border-[5px] border-solid border-[#9cc8f8] bg-white'
+			></div>
 			<p className='text-white text-bold'>{props.data.label}</p>
 			<Handle
 				type='source'
@@ -43,6 +47,11 @@ export function CustomNode(props: NodeProps) {
 				style={HANDLE_STYLES}
 			/>
 			<Handle type='target' position={Position.Top} style={HANDLE_STYLES} />
+			<Tooltip
+				id={`node_tooltip${props.id}`}
+				place='bottom'
+				html={props.data.title}
+			/>
 		</div>
 	)
 }
