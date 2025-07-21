@@ -13,6 +13,7 @@ export function jsonParser(json: TopologyData | null): [Node[], Edge[]] {
 			id: currentNode.id.toString(),
 			data: { label: currentNode.name },
 			position: { x: currentNode.x, y: currentNode.y },
+			type: 'custom',
 			// style: {
 			// 	borderRadius: '100%',
 			// 	width: '100px',
@@ -33,6 +34,7 @@ export function jsonParser(json: TopologyData | null): [Node[], Edge[]] {
 			source: currentEdge.from.toString(),
 			target: currentEdge.to.toString(),
 			animated: true,
+			type: 'custom',
 		}
 		edges.push(newEdge)
 	}

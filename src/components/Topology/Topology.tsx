@@ -1,33 +1,24 @@
-import useFetchTopoToJSON from '@hooks/useFetchTopoToJSON'
 import useSaveCoords from '@hooks/useSaveCoords'
-import { jsonParser } from '@utils/jsonParser'
 import type { Edge, Node, NodeChange } from '@xyflow/react'
 import { Background, ReactFlow, applyNodeChanges } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import { useCallback, useEffect, useState } from 'react'
+import { edgeTypes, nodeTypes, type TopologyProps } from './types'
 
-function Topology() {
-	const [nodes, setNodes] = useState<Node[]>()
-	const [edges, setEdges] = useState<Edge[]>()
-	const { json } = useFetchTopoToJSON()
+function Topology({ nodesProps, edgesProps }: TopologyProps) {
 	const { saveCoords } = useSaveCoords()
+	const [nodes, setNodes] = useState<Node[]>([])
+	const [edges, setEdges] = useState<Edge[]>([])
 
 	useEffect(() => {
-		//парсинг нод и эджей из json
-		if (!json) return
-		const parsedData = jsonParser(json)
-		if (!parsedData) throw new Error('Parsed data is undefined')
-
-		const [parsedNodes, parsedEdges] = parsedData
-		console.log(parsedData)
-		setNodes(parsedNodes)
-		setEdges(parsedEdges)
-	}, [json])
+		setNodes(nodesProps)
+		setEdges(edgesProps)
+	}, [nodesProps, edgesProps])
 
 	//обработчик перемещения нод
 	const onNodesChange = useCallback((changes: NodeChange[]) => {
 		setNodes(nodesSnapshot => {
-			if (!nodesSnapshot) return
+			if (!nodesSnapshot) return nodes
 			const changedNode = getChangedNode(nodesSnapshot)
 			if (changedNode)
 				saveCoords({
@@ -51,16 +42,16 @@ function Topology() {
 
 	return (
 		<>
-			<div className='h-[100svh] w-[100svw] color-black'>
-				<ReactFlow
-					nodes={nodes}
-					edges={edges}
-					onNodesChange={onNodesChange}
-					fitView
-				>
-					<Background />
-				</ReactFlow>
-			</div>
+			<ReactFlow
+				nodes={nodes}
+				edges={edges}
+				onNodesChange={onNodesChange}
+				fitView
+				nodeTypes={nodeTypes}
+				edgeTypes={edgeTypes}
+			>
+				<Background />
+			</ReactFlow>
 		</>
 	)
 }

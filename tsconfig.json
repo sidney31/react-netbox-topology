@@ -7,8 +7,7 @@
 
 	"compilerOptions": {
 		"erasableSyntaxOnly": false,
-
-		"baseUrl": "./",
+		"baseUrl": ".",
 		"paths": {
 			"@/*": ["src/*"],
 			"@components/*": ["src/components/*"],

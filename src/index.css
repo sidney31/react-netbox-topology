@@ -2,3 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 @import-normalize;
+
+body {
+	background-color: #1e2328;
+}
