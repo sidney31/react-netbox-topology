@@ -3,15 +3,17 @@ import useFetchTopoToJSON from '@hooks/useFetchTopoToJSON'
 import jsonParser from '@utils/jsonParser'
 import type { Edge, Node } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import SaveTopologyButton from './components/SaveTopologyButton/SaveTopologyButton'
+//
 
 function App() {
 	const [nodes, setNodes] = useState<Node[]>([])
 	const [edges, setEdges] = useState<Edge[]>([])
+	const topologyRef = useRef<HTMLDivElement>(null)
 	const { json } = useFetchTopoToJSON()
 
 	useEffect(() => {
-		//парсинг нод и эджей из json
 		if (!json) return
 
 		try {
@@ -24,9 +26,18 @@ function App() {
 	}, [json])
 
 	return (
-		<div className='w-[100svw] h-[100svh] border-red-100 border-[1px]'>
-			<Topology nodesProps={nodes} edgesProps={edges} />
-		</div>
+		<>
+			<div ref={topologyRef} className='w-[100svw] h-[80svh] bg-stone-900'>
+				<Topology nodesProps={nodes} edgesProps={edges} />
+			</div>
+
+			<SaveTopologyButton
+				topology={topologyRef.current}
+				className='w-[150px] h-[40px] bg-[#1e2328] border-white border-[1px] rounded-md text-white'
+			>
+				Сохранить в png
+			</SaveTopologyButton>
+		</>
 	)
 }
 

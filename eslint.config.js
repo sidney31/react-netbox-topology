@@ -1,30 +1,47 @@
-import js from '@eslint/js'
+import pluginJs from '@eslint/js'
 import pluginReact from 'eslint-plugin-react'
-import { defineConfig } from 'eslint/config'
+import pluginReactHooks from 'eslint-plugin-react-hooks' // Import react-hooks plugin
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
-export default defineConfig([
+export default tseslint.config(
 	{
-		files: ['**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-		plugins: { js },
-		extends: ['js/recommended'],
-	},
-	{
-		files: ['**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-		languageOptions: { globals: globals.browser },
-	},
-	{
-		files: ['**/*.{ts,tsx}'],
-		settings: {
-			'import/resolver': {
-				typescript: {
-					project: './tsconfig.json', // путь к вашему tsconfig.json
+		env: {
+			node: true, // Enable Node.js global variables
+		},
+		files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
+		languageOptions: {
+			parser: tseslint.parser,
+			parserOptions: {
+				ecmaFeatures: {
+					jsx: true,
 				},
+				ecmaVersion: 'latest',
+				sourceType: 'module',
+			},
+			globals: globals.browser,
+		},
+		plugins: {
+			react: pluginReact,
+			'react-hooks': pluginReactHooks, // Add react-hooks plugin
+		},
+		rules: {
+			...pluginJs.configs.recommended.rules,
+			...pluginReact.configs.recommended.rules,
+			...tseslint.configs.recommended.rules,
+			// Add or override specific rules here
+			'react/react-in-jsx-scope': 'off',
+			'react-hooks/rules-of-hooks': 'error',
+			'react-hooks/exhaustive-deps': 'warn',
+		},
+		settings: {
+			react: {
+				version: 'detect',
 			},
 		},
 	},
-
-	tseslint.configs.recommended,
-	pluginReact.configs.flat.recommended,
-])
+	// Add additional configurations as needed (e.g., for specific file types or ignores)
+	{
+		ignores: ['dist', 'node_modules'],
+	}
+)

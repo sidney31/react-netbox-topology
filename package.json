@@ -12,6 +12,10 @@
   "dependencies": {
     "@xyflow/react": "^12.8.2",
     "axios": "^1.10.0",
+    "capture-website": "^4.2.0",
+    "dotenv": "^17.2.0",
+    "html-to-image": "^1.11.11",
+    "r": "^0.0.5",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-tooltip": "^5.29.1"

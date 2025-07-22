@@ -1,4 +1,4 @@
-const TOKEN = '2483b1d070eb58f52c48c91687d981b04c564461'
+const TOKEN = process.env.API_TOKEN!
 import type { ReactNode } from 'react'
 import { useState } from 'react'
 import { AuthContext } from '../contexts/AuthContext'

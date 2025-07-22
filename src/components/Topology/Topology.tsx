@@ -8,7 +8,7 @@ import type {
 } from '@xyflow/react'
 import { applyNodeChanges, Background, ReactFlow } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
-import { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { edgeTypes, nodeTypes, type TopologyProps } from './types'
 
 function Topology({ nodesProps, edgesProps }: TopologyProps) {
