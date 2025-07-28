@@ -1,8 +1,8 @@
 import { toPng } from 'html-to-image'
-import type { ButtonHTMLAttributes } from 'react'
+import type { ButtonHTMLAttributes, RefObject } from 'react'
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
-	topology: HTMLDivElement | null
+	topology: RefObject<HTMLDivElement | null>
 }
 
 export default function SaveTopologyButton({
@@ -11,8 +11,9 @@ export default function SaveTopologyButton({
 	...props
 }: Props) {
 	const takeCapture = () => {
-		if (!props.topology) return
-		toPng(props.topology)
+		if (!props.topology.current) return
+
+		toPng(props.topology.current)
 			.then(dataUrl => {
 				downloadImage(dataUrl)
 			})

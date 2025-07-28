@@ -6,6 +6,10 @@
 	],
 
 	"compilerOptions": {
+		"strict": true,
+		"noImplicitAny": false,
+		"moduleResolution": "node",
+		"esModuleInterop": true,
 		"types": ["node"],
 		"erasableSyntaxOnly": false,
 		"baseUrl": ".",

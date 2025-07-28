@@ -1,59 +1,83 @@
 import useSaveCoords from '@hooks/useSaveCoords'
-import type {
-	Edge,
-	Node,
-	NodeChange,
-	OnNodeDrag,
-	OnNodesChange,
-} from '@xyflow/react'
-import { applyNodeChanges, Background, ReactFlow } from '@xyflow/react'
-import '@xyflow/react/dist/style.css'
-import React, { useCallback, useEffect, useState } from 'react'
-import { edgeTypes, nodeTypes, type TopologyProps } from './types'
+import { useEffect, useRef, type HTMLAttributes } from 'react'
+import { Network, type Data } from 'vis-network'
 
-function Topology({ nodesProps, edgesProps }: TopologyProps) {
+interface Props extends HTMLAttributes<HTMLDivElement> {
+	data: Data
+}
+
+function Topology({ children, style, ...props }: Props) {
 	const { saveCoords } = useSaveCoords()
-	const [nodes, setNodes] = useState<Node[]>([])
-	const [edges, setEdges] = useState<Edge[]>([])
+	const topologyRef = useRef(null)
 
 	useEffect(() => {
-		setNodes(nodesProps)
-		setEdges(edgesProps)
-	}, [nodesProps, edgesProps])
+		if (!topologyRef.current) return
 
-	const onNodesChange: OnNodesChange = useCallback(
-		(changes: NodeChange<Node>[]) =>
-			setNodes(nodesSnapshot => applyNodeChanges(changes, nodesSnapshot)),
-		[]
-	)
+		const options = {
+			physics: {
+				enabled: true,
+				barnesHut: {
+					gravitationalConstant: -2500,
+					springConstant: 0,
+					damping: 1,
+				},
+			},
+			interaction: {
+				hover: true,
+				hoverConnectedEdges: true,
+				zoomSpeed: 0.5,
+			},
+			nodes: {
+				borderWidth: 5,
+				borderWidthSelected: 5,
+				shape: 'dot',
+				size: 40,
 
-	const onNodeDragStop: OnNodeDrag = useCallback(
-		(event: React.MouseEvent, node: Node) => {
-			saveCoords({
+				color: {
+					border: '#D2E5FF',
+					background: 'white',
+					highlight: {
+						border: '#D2E5FF',
+						background: 'white',
+					},
+				},
+				font: {
+					align: 'left',
+					color: 'white',
+					multi: 'html',
+				},
+			},
+			edges: {
+				color: { color: 'orange', highlight: 'orange', hover: 'orange' },
+				width: 2,
+				hoverWidth: 2,
+				selectionWidth: 2,
+				dashes: true,
+				smooth: {
+					enabled: true,
+					type: 'continuous',
+					roundness: 0.5,
+				},
+			},
+		}
+
+		const network = new Network(topologyRef.current, props.data, options)
+		const handleDragEnd = (params: { nodes: number[] }) => {
+			if (!params.nodes[0]) return
+			const nodeId = params.nodes[0]
+			const position = network.getPosition(nodeId)
+			return saveCoords({
 				group: 'default',
-				node_id: node.id,
-				x: node.position.x,
-				y: node.position.y,
+				node_id: nodeId.toString(),
+				x: position.x.toString(),
+				y: position.y.toString(),
 			})
-		},
-		[]
-	)
+		}
+		network.fit({ animation: true })
+		network.on('dragEnd', handleDragEnd)
+	}, [topologyRef])
 
-	return (
-		<>
-			<ReactFlow
-				nodes={nodes}
-				edges={edges}
-				onNodeDragStop={onNodeDragStop}
-				onNodesChange={onNodesChange}
-				fitView
-				nodeTypes={nodeTypes}
-				edgeTypes={edgeTypes}
-			>
-				<Background />
-			</ReactFlow>
-		</>
-	)
+	return <div className='topo' style={style} {...props} ref={topologyRef}></div>
 }
 
 export default Topology

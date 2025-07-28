@@ -6,3 +6,10 @@
 body {
 	background-color: #1e2328;
 }
+
+.vis-tooltip {
+	position: absolute;
+	background-color: beige;
+	border: 1px black solid;
+	text-align: left;
+}

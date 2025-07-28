@@ -1,15 +1,13 @@
 import Topology from '@components/Topology/Topology'
 import useFetchTopoToJSON from '@hooks/useFetchTopoToJSON'
-import jsonParser from '@utils/jsonParser'
-import type { Edge, Node } from '@xyflow/react'
-import '@xyflow/react/dist/style.css'
 import { useEffect, useRef, useState } from 'react'
+import type { Data } from 'vis-network'
 import SaveTopologyButton from './components/SaveTopologyButton/SaveTopologyButton'
+import jsonParser from './utils/jsonParser'
 //
 
 function App() {
-	const [nodes, setNodes] = useState<Node[]>([])
-	const [edges, setEdges] = useState<Edge[]>([])
+	const [data, setData] = useState<Data>()
 	const topologyRef = useRef<HTMLDivElement>(null)
 	const { json } = useFetchTopoToJSON()
 
@@ -17,22 +15,32 @@ function App() {
 		if (!json) return
 
 		try {
-			const [parsedNodes, parsedEdges] = jsonParser(json)
-			setNodes(parsedNodes)
-			setEdges(parsedEdges)
+			setData(jsonParser(json))
 		} catch (error) {
 			console.error('Parsing failed: ', error)
 		}
 	}, [json])
 
+	if (!data) {
+		return <></>
+	}
 	return (
 		<>
-			<div ref={topologyRef} className='w-[100svw] h-[80svh] bg-stone-900'>
-				<Topology nodesProps={nodes} edgesProps={edges} />
+			<div
+				ref={topologyRef}
+				style={{ height: '90svh', width: '100svw', border: '1px white solid' }}
+			>
+				<Topology
+					data={data}
+					style={{
+						height: `100%`,
+						width: `100%`,
+					}}
+				/>
 			</div>
 
 			<SaveTopologyButton
-				topology={topologyRef.current}
+				topology={topologyRef}
 				className='w-[150px] h-[40px] bg-[#1e2328] border-white border-[1px] rounded-md text-white'
 			>
 				Сохранить в png
