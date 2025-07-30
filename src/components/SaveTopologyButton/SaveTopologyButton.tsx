@@ -31,7 +31,7 @@ export default function SaveTopologyButton({
 	}
 
 	return (
-		<button {...props} onClick={takeCapture}>
+		<button style={style} {...props} onClick={takeCapture}>
 			{children}
 		</button>
 	)

@@ -1,8 +1,8 @@
-import Topology from '@components/Topology/Topology'
-import useFetchTopoToJSON from '@hooks/useFetchTopoToJSON'
 import { useEffect, useRef, useState } from 'react'
 import type { Data } from 'vis-network'
 import SaveTopologyButton from './components/SaveTopologyButton/SaveTopologyButton'
+import Topology from './components/Topology/Topology'
+import useFetchTopoToJSON from './hooks/useFetchTopoToJSON'
 import jsonParser from './utils/jsonParser'
 //
 

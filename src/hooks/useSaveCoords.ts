@@ -4,8 +4,8 @@ import { useApiClient } from './useApiClient'
 type SaveCoordsParams = {
 	group: string
 	node_id: string
-	x: number
-	y: number
+	x: string
+	y: string
 }
 
 export default function useSaveCoords() {
